@@ -1,4 +1,5 @@
 FROM gradle:8.7.0-jdk21 AS builder
+ENV JAVA_TOOL_OPTIONS="-XX:UseAVX=2"
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle bootJar --no-daemon
@@ -20,4 +21,4 @@ RUN wget -O dd-java-agent.jar https://github.com/DataDog/dd-trace-java/releases/
 RUN apk add curl wget
 RUN mkdir -p /tmp/files && echo "hello" > /tmp/files/hello.txt && echo "world" > /tmp/files/foo.txt
 
-CMD ["java", "-javaagent:/app/dd-java-agent.jar", "-jar", "/app/spring-boot-application.jar"]
+CMD ["java", "-XX:UseAVX=2", "-javaagent:/app/dd-java-agent.jar", "-jar", "/app/spring-boot-application.jar"]
